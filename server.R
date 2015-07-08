@@ -10,6 +10,8 @@ library(TEQC)
 library(ggplot2)
 
 shinyServer(function(input, output) {
+  
+  source("coverage_server.R", local=TRUE)
 
   output$distPlot <- renderPlot({
 
