@@ -104,24 +104,32 @@ plot_with_exons= function(coverageAll, targets, chr, Start, End, Offset=0, add=F
     data_names = data.frame(x=mid_point,y=9,label=gene_name)
     
   plot = ggplot(data=data_to_plot, aes(x=x,y=covsel))+
-      geom_line(size=1, colour='gray',alpha=0.8)+
+      geom_line(size=1, colour='black',alpha=0.8)+
       scale_y_continuous('Coverage')+
       xlab(paste('position on chromososme', chr))+
       theme_bw()+
       #       geom_rect(xmin=Start,xmax=End,ymin=1,ymax=2)
-      ggplot2::geom_rect(data=exons,aes(x=NULL,y=NULL,xmin=exon_chrom_start,ymin=0,ymax=5,xmax=exon_chrom_end), fill='blue', alpha = 0.2)+
+      ggplot2::geom_rect(data=exons,aes(x=NULL,y=NULL,xmin=exon_chrom_start,ymin=0,ymax=5,xmax=exon_chrom_end), fill='blue', alpha = 0.3)+
       geom_text(data=data_names,aes(x=x,y=y,label=label), colour='blue')
     
   } else {
   plot =  ggplot(data=data_to_plot, aes(x=x,y=covsel))+
-      geom_line(size=1, colour='gray',alpha=0.8)+
+      geom_line(size=1, colour='black',alpha=0.8)+
       scale_y_continuous('Coverage')+
       xlab(paste('position on chromososme', chr))+
       theme_bw()
   }
-  plot
-  #TO DO add targets
   
+  tar <- intersect(ir, ranges(targets)[[chr]])
+  
+  plot = plot +
+    ggplot2::geom_rect(data=as.data.frame(tar),aes(x=NULL,y=NULL,xmin=start,ymin=0,ymax=ma,xmax=end),
+                       fill='grey', alpha = 0.3)
+    
+  
+   #TO DO add targets
+  #show plot/return plot
+  plot
   
 }
 
