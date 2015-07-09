@@ -62,7 +62,12 @@ prep_plot_with_exons= function(coverageAll, targets, chr, Start, End, Offset=0, 
   
   #message(length(covercounts))
   
-  chrom = substr(chr, 4, nchar(chr)) #chromosome number
+  chrom = substr(chr, 4, nchar(chr))
+  
+  if (substr(names(targets)[1],1,1)!='c') {
+    chr = chrom
+  }
+  
   
   # stop if all reads lie "left" of the selected Start position
   L = length(covercounts)
@@ -75,8 +80,6 @@ prep_plot_with_exons= function(coverageAll, targets, chr, Start, End, Offset=0, 
   }
   
   ir = IRanges(start=Start, end=End)
-  
-  message(length(ir))
   covsel = covercounts[ir]  # use [ instead of deprecated seqselect
  # message(length(covsel))
   
@@ -84,24 +87,25 @@ prep_plot_with_exons= function(coverageAll, targets, chr, Start, End, Offset=0, 
   if(all(covsel == 0)) {
     stop(paste("no reads falls into the selected region on chromosome", chrom))
   }
-  
-  #ma = max(covsel)
-  #mi = .04 * ma
-  #ylim = c(-mi, ma)
-  
+    
   data_to_plot = data.frame(x=Start:End, y=covsel)
   
-  # genes = fetch_all_genes_for_region(ensembl_in = ensembl_human,chr_num = chrom, start = Start, end = End)
   
   return(data_to_plot)
   
 }
   
-draw_plot_with_exons= function(data_to_plot, targets, chr, Start, End, ensembl_in, ...) {
+draw_plot_with_exons= function(data_to_plot, targets, chr, Start, End, ensembl_in, add_exons=TRUE,...) {
     
   ir = IRanges(start=Start, end=End)
   chrom = substr(chr, 4, nchar(chr))
+  if (substr(names(targets)[1],1,1)!='c') {
+    chr = chrom
+  }
+  
   ma = max(data_to_plot$y)
+  
+  message('draw-plot')
   
   plot = ggplot(data=data_to_plot, aes(x=x,y=y))+
     geom_line(size=1, colour='black',alpha=0.8)+
@@ -109,33 +113,38 @@ draw_plot_with_exons= function(data_to_plot, targets, chr, Start, End, ensembl_i
     xlab(paste('position on chromososme', chr))+
     theme_bw()
   
-  exons = fetch_all_exons_for_region(ensembl_in = ensembl_human,chr_num = chrom, start = Start, end = End)
+  if (add_exons) {
+    exons = fetch_all_exons_for_region(ensembl_in = ensembl_human,chr_num = chrom, start = Start, end = End)
 
   
-  if(dim(exons)[1]>0) {
+    if(dim(exons)[1]>0) {
+      
+  #     exons2 = exons[,3:5]
+  #     exons2 = as(reduce(as(exons2,'GRanges')),'data.frame')
+      iexons = reduce(IRanges(start=exons$exon_chrom_start,end=exons$exon_chrom_end))
+      exonsrange = range(iexons)
+      iexons = intersect(ir,iexons)
+      exonsrange = setdiff(intersect(ir, exonsrange),iexons)
+      
+      if (length(iexons)>0) {
+        ma_exon = max(max(iexons))
+        mi_exon = min(min(iexons))
+        
+        mid_point = (ma_exon + mi_exon)/2
+        gene_name = exons$external_gene_name[1]
+        #the above should be split across multiple genes (if threr are more than 1)
+        
+        data_names = data.frame(x=mid_point,y=8,label=gene_name)
+        
+      plot = plot+
+          geom_rect(data=as.data.frame(exonsrange),aes(x=NULL,y=NULL,xmin=start-1,ymin=2,ymax=3,xmax=end+1),
+                    fill='blue', alpha = 0.3)+
+          geom_rect(data=as.data.frame(iexons),aes(x=NULL,y=NULL,xmin=start,ymin=0,ymax=5,xmax=end),
+                    fill='blue', alpha = 0.3)+
+          geom_text(data=data_names,aes(x=x,y=y,label=label),  colour='blue', alpha = 0.8)
     
-#     exons2 = exons[,3:5]
-#     exons2 = as(reduce(as(exons2,'GRanges')),'data.frame')
-    iexons = reduce(IRanges(start=exons$exon_chrom_start,end=exons$exon_chrom_end))
-    exonsrange = range(iexons)
-    iexons = intersect(ir,iexons)
-    exonsrange = setdiff(intersect(ir, exonsrange),iexons)
-    
-    ma_exon = max(max(iexons))
-    mi_exon = min(min(iexons))
-    
-    mid_point = (ma_exon + mi_exon)/2
-    gene_name = exons$external_gene_name[1]
-    #the above should be split across multiple genes (if threr are more than 1)
-    
-    data_names = data.frame(x=mid_point,y=8,label=gene_name)
-    
-  plot = plot+
-      geom_rect(data=as.data.frame(exonsrange),aes(x=NULL,y=NULL,xmin=start-1,ymin=2,ymax=3,xmax=end+1),
-                fill='blue', alpha = 0.3)+
-      geom_rect(data=as.data.frame(iexons),aes(x=NULL,y=NULL,xmin=start,ymin=0,ymax=5,xmax=end),
-                fill='blue', alpha = 0.3)+
-      geom_text(data=data_names,aes(x=x,y=y,label=label),  colour='blue', alpha = 0.8)
+      }
+    }
   }
   
   tar = intersect(ir, ranges(targets)[[chr]])

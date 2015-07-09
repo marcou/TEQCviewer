@@ -50,12 +50,22 @@ shinyServer(function(input, output) {
 
   })
 
-
+  
+#   data_to_plot = reactive({
+#     region = str_split(input$region,'\\:')[[1]]
+#     chr = paste('chr',region[1],sep='')
+#     
+#     Start = as.integer(str_split(region[2], '\\-')[[1]][1])
+#     End = as.integer(str_split(region[2], '\\-')[[1]][2])
+#     
+#     prep_plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
+#     
+#   })
 
 output$covgPlot <- renderPlot({
   
-  all_coverage <- user_coverage()
-  targets <- user_targets()
+ # all_coverage <- user_coverage()
+ #  targets <- user_targets()
   
   
   region = str_split(input$region,'\\:')[[1]]
@@ -65,6 +75,7 @@ output$covgPlot <- renderPlot({
   End = as.integer(str_split(region[2], '\\-')[[1]][2])
   
   data_to_plot = prep_plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
+ 
   
 #   Start =  11157025  
 #   
@@ -76,6 +87,34 @@ output$covgPlot <- renderPlot({
   bp
 
 })
+
+output$covgPlot_own <- renderPlot({
+  
+ all_coverage <- user_coverage()
+  targets <- user_targets()
+  
+  
+  region = str_split(input$region,'\\:')[[1]]
+  chr = paste('chr',region[1],sep='')
+  
+  Start = as.integer(str_split(region[2], '\\-')[[1]][1])
+  End = as.integer(str_split(region[2], '\\-')[[1]][2])
+  
+  data_to_plot = prep_plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human, add_exons=FALSE) 
+  
+  
+  #   Start =  11157025  
+  #   
+  #   End = 11158264
+  #   
+  #   chr = 'chr1'
+  
+  bp <- draw_plot_with_exons(data_to_plot,targets,chr,Start,End, ensembl_in=ensembl_human) 
+  bp
+  
+})
+
+
 
 output$click_info <- renderText({
   region = str_split(input$region,'\\:')[[1]]

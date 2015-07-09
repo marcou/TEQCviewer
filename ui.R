@@ -15,7 +15,7 @@ source("panels_ui.R")
 shinyUI(fluidPage(
   headerPanel("TEQCviewer"),
   mainPanel(
-    tabsetPanel(load_data, coverage_hist, coverage_plot
+    tabsetPanel(load_data, coverage_hist, coverage_plot, coverage_plot_own
   ))))
 
 
