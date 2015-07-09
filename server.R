@@ -21,10 +21,10 @@ shinyServer(function(input, output) {
     
    rds <- input$reads
    tgt <- input$targets
-   rds <- load(rds$datapath)
-   tgt <- load(tgt$datapath)
+   load(rds$datapath)
+   load(tgt$datapath)
    
-   bp <- chrom.barplot(rds(), tgt())
+   bp <- chrom.barplot(reads, targets)
    bp
 
    
