@@ -1,6 +1,8 @@
 ###
 
 library(biomaRt)
+library(IRanges)
+library(ggplot2)
 
 ensembl=useMart("ensembl")  # using ensembl database data
 
@@ -56,29 +58,29 @@ fetch_coordinates_for_gene = function(ensembl_in,gene_id, key='external_gene_nam
 plot_with_exons= function(coverageAll, targets, chr, Start, End, Offset=0, add=FALSE,
                           col.line=1, col.target="orange", col.offset="yellow", ensembl_in, ...) {
   
-  covercounts <- coverageAll[[chr]]
-  chrom <- substr(chr, 4, nchar(chr))
+  covercounts = coverageAll[[chr]]
+  chrom = substr(chr, 4, nchar(chr)) #chromosome number
   
   # stop if all reads lie "left" of the selected Start position
-  L <- length(covercounts)
+  L = length(covercounts)
   if(L < Start)
     
     stop(paste("no reads falls into the selected region on chromosome", chrom))
   
   # add 0's when 'End' is "right" of largest read position
   if(L < End)
-    covercounts <- c(covercounts, Rle(rep(0, End-L)))
+    covercounts = c(covercounts, Rle(rep(0, End-L)))
   
-  ir <- IRanges(start=Start, end=End)
-  covsel <- covercounts[ir]  # use [ instead of deprecated seqselect
+  ir = IRanges(start=Start, end=End)
+  covsel = covercounts[ir]  # use [ instead of deprecated seqselect
   
   # also stop if coverage is 0 for all bases in selected region
   if(all(covsel == 0))
     stop(paste("no reads falls into the selected region on chromosome", chrom))
   
-  ma <- max(covsel)
-  mi <- .04 * ma
-  #ylim <- c(-mi, ma)
+  ma = max(covsel)
+  #mi = .04 * ma
+  #ylim = c(-mi, ma)
   
   data_to_plot = data.frame(x=Start:End, coverage=covsel)
   
@@ -86,48 +88,49 @@ plot_with_exons= function(coverageAll, targets, chr, Start, End, Offset=0, add=F
   
   exons = fetch_all_exons_for_region(ensembl_in = ensembl_human,chr_num = chrom, start = Start, end = End)
   
-  exons=exons[(exons$exon_chrom_start>Start &  exons$exon_chrom_start<End) |
-                (exons$exon_chrom_end>Start &  exons$exon_chrom_end<End) ,]
+#   exons=exons[(exons$exon_chrom_start>Start &  exons$exon_chrom_start<End) |
+#                 (exons$exon_chrom_end>Start &  exons$exon_chrom_end<End) ,]
   #only ones in our desired range
   
+  plot = ggplot(data=data_to_plot, aes(x=x,y=covsel))+
+    geom_line(size=1, colour='black',alpha=0.8)+
+    scale_y_continuous('Coverage')+
+    xlab(paste('position on chromososme', chr))+
+    theme_bw()
   
   if(dim(exons)[1]>0) {
     
+#     exons2 = exons[,3:5]
+#     exons2 = as(reduce(as(exons2,'GRanges')),'data.frame')
+    iexons = reduce(IRanges(start=exons$exon_chrom_start,end=exons$exon_chrom_end))
+    exonsrange = range(iexons)
+    iexons = intersect(ir,iexons)
+    exonsrange = setdiff(intersect(ir, exonsrange),iexons)
     
-    ma_exon = max(exons$exon_chrom_end)
-    mi_exon = min(exons$exon_chrom_start)
+    ma_exon = max(max(iexons))
+    mi_exon = min(min(iexons))
     
     mid_point = (ma_exon + mi_exon)/2
     gene_name = exons$external_gene_name[1]
     #the above should be split across multiple genes (if threr are more than 1)
     
-    data_names = data.frame(x=mid_point,y=9,label=gene_name)
+    data_names = data.frame(x=mid_point,y=8,label=gene_name)
     
-  plot = ggplot(data=data_to_plot, aes(x=x,y=covsel))+
-      geom_line(size=1, colour='black',alpha=0.8)+
-      scale_y_continuous('Coverage')+
-      xlab(paste('position on chromososme', chr))+
-      theme_bw()+
-      #       geom_rect(xmin=Start,xmax=End,ymin=1,ymax=2)
-      ggplot2::geom_rect(data=exons,aes(x=NULL,y=NULL,xmin=exon_chrom_start,ymin=0,ymax=5,xmax=exon_chrom_end), fill='blue', alpha = 0.3)+
-      geom_text(data=data_names,aes(x=x,y=y,label=label), colour='blue')
-    
-  } else {
-  plot =  ggplot(data=data_to_plot, aes(x=x,y=covsel))+
-      geom_line(size=1, colour='black',alpha=0.8)+
-      scale_y_continuous('Coverage')+
-      xlab(paste('position on chromososme', chr))+
-      theme_bw()
+  plot = plot+
+      geom_rect(data=as.data.frame(exonsrange),aes(x=NULL,y=NULL,xmin=start,ymin=2,ymax=3,xmax=end),
+                fill='blue', alpha = 0.3)+
+      geom_rect(data=as.data.frame(iexons),aes(x=NULL,y=NULL,xmin=start,ymin=0,ymax=5,xmax=end),
+                fill='blue', alpha = 0.3)+
+      geom_text(data=data_names,aes(x=x,y=y,label=label),  colour='blue', alpha = 0.8)
   }
   
-  tar <- intersect(ir, ranges(targets)[[chr]])
+  tar = intersect(ir, ranges(targets)[[chr]])
   
   plot = plot +
-    ggplot2::geom_rect(data=as.data.frame(tar),aes(x=NULL,y=NULL,xmin=start,ymin=0,ymax=ma,xmax=end),
+    geom_rect(data=as.data.frame(tar),aes(x=NULL,y=NULL,xmin=start,ymin=0,ymax=ma,xmax=end),
                        fill='grey', alpha = 0.3)
     
   
-   #TO DO add targets
   #show plot/return plot
   plot
   
