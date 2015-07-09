@@ -51,16 +51,16 @@ shinyServer(function(input, output) {
   })
 
   
-#   data_to_plot = reactive({
-#     region = str_split(input$region,'\\:')[[1]]
-#     chr = paste('chr',region[1],sep='')
-#     
-#     Start = as.integer(str_split(region[2], '\\-')[[1]][1])
-#     End = as.integer(str_split(region[2], '\\-')[[1]][2])
-#     
-#     prep_plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
-#     
-#   })
+  data_to_plot = reactive({
+    region = str_split(input$region,'\\:')[[1]]
+    chr = paste('chr',region[1],sep='')
+    
+    Start = as.integer(str_split(region[2], '\\-')[[1]][1])
+    End = as.integer(str_split(region[2], '\\-')[[1]][2])
+    
+    prep_plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
+    
+  })
 
 output$covgPlot <- renderPlot({
   
@@ -73,8 +73,8 @@ output$covgPlot <- renderPlot({
   
   Start = as.integer(str_split(region[2], '\\-')[[1]][1])
   End = as.integer(str_split(region[2], '\\-')[[1]][2])
-  
-  data_to_plot = prep_plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
+#   
+#   data_to_plot =  prep_plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
  
   
 #   Start =  11157025  
@@ -83,25 +83,25 @@ output$covgPlot <- renderPlot({
 #   
 #   chr = 'chr1'
   
-  bp <- draw_plot_with_exons(data_to_plot,targets,chr,Start,End, ensembl_in=ensembl_human) 
+  bp <- draw_plot_with_exons(data_to_plot(),targets,chr,Start,End, ensembl_in=ensembl_human) 
   bp
 
 })
 
 output$covgPlot_own <- renderPlot({
   
- all_coverage <- user_coverage()
-  targets <- user_targets()
-  
-  
-  region = str_split(input$region,'\\:')[[1]]
-  chr = paste('chr',region[1],sep='')
-  
-  Start = as.integer(str_split(region[2], '\\-')[[1]][1])
-  End = as.integer(str_split(region[2], '\\-')[[1]][2])
-  
-  data_to_plot = prep_plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
-  
+#  all_coverage <- user_coverage()
+#   targets <- user_targets()
+#   
+#   
+#   region = str_split(input$region,'\\:')[[1]]
+#   chr = paste('chr',region[1],sep='')
+#   
+#   Start = as.integer(str_split(region[2], '\\-')[[1]][1])
+#   End = as.integer(str_split(region[2], '\\-')[[1]][2])
+#   
+#   data_to_plot = prep_plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
+#   
   
   #   Start =  11157025  
   #   
@@ -119,13 +119,13 @@ output$covgPlot_own <- renderPlot({
 output$click_info <- renderText({
   region = str_split(input$region,'\\:')[[1]]
   chr = paste('chr',region[1],sep='')
+#   
+#   Start = as.integer(str_split(region[2], '\\-')[[1]][1])
+#   End = as.integer(str_split(region[2], '\\-')[[1]][2])
+#   
+#   data_to_plot = prep_plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
   
-  Start = as.integer(str_split(region[2], '\\-')[[1]][1])
-  End = as.integer(str_split(region[2], '\\-')[[1]][2])
-  
-  data_to_plot = prep_plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
-  
-  nearest = nearPoints(data_to_plot, input$plot_click, addDist = TRUE)
+  nearest = nearPoints(data_to_plot(), input$plot_click, addDist = TRUE)
   
    paste("Selected location:\n",chr,':',nearest$x[1],' coverage=',nearest$y[1],sep='')
 })

@@ -58,15 +58,17 @@ fetch_coordinates_for_gene = function(ensembl_in,gene_id, key='external_gene_nam
 prep_plot_with_exons= function(coverageAll, targets, chr, Start, End, Offset=0, add=FALSE,
                           col.line=1, col.target="orange", col.offset="yellow", ensembl_in, ...) {
   
-  covercounts = coverageAll[[chr]]
   
-  #message(length(covercounts))
+  message('recalculating data')
   
   chrom = substr(chr, 4, nchar(chr))
   
   if (substr(names(targets)[1],1,1)!='c') {
+    'message'
     chr = chrom
   }
+  
+  covercounts = coverageAll[[chr]]
   
   
   # stop if all reads lie "left" of the selected Start position
