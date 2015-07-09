@@ -67,7 +67,7 @@ output$covgPlot <- renderPlot({
  # all_coverage <- user_coverage()
  #  targets <- user_targets()
   
-  
+  add_exons = input$add_exons
   region = str_split(input$region,'\\:')[[1]]
   chr = paste('chr',region[1],sep='')
   
@@ -83,7 +83,7 @@ output$covgPlot <- renderPlot({
 #   
 #   chr = 'chr1'
   
-  bp <- draw_plot_with_exons(data_to_plot(),targets,chr,Start,End, ensembl_in=ensembl_human) 
+  bp <- draw_plot_with_exons(data_to_plot(),targets,chr,Start,End, ensembl_in=ensembl_human, add_exons=add_exons) 
   bp
 
 })
@@ -94,6 +94,7 @@ output$covgPlot_own <- renderPlot({
    targets <- user_targets()
 #   
 #   
+add_exons = input$add_exons2
   region = str_split(input$region2,'\\:')[[1]]
   chr = paste('chr',region[1],sep='')
   
@@ -101,15 +102,8 @@ output$covgPlot_own <- renderPlot({
   End = as.integer(str_split(region[2], '\\-')[[1]][2])
   
    data_to_plot = prep_plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
-#   
   
-  #   Start =  11157025  
-  #   
-  #   End = 11158264
-  #   
-  #   chr = 'chr1'
-  
-  bp <- draw_plot_with_exons(data_to_plot,targets,chr,Start,End, ensembl_in=ensembl_human, add_exons=FALSE) 
+  bp <- draw_plot_with_exons(data_to_plot,targets,chr,Start,End, ensembl_in=ensembl_human, add_exons=add_exons) 
   bp
   
 })
