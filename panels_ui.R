@@ -2,7 +2,8 @@
 load_data <- tabPanel("Load data",
                       inputPanel(fileInput("reads", "Reads")),
                       inputPanel(fileInput("coverage", "Coverage")),
-                      inputPanel(fileInput("targets", "Targets"))
+                      inputPanel(fileInput("targets", "Targets")),
+                      includeMarkdown("upload_info.md")
                       )
 
 coverage_hist <- tabPanel("Histogram",

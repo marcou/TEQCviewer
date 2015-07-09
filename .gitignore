@@ -10,5 +10,5 @@
 vignettes/*.html
 vignettes/*.pdf
 packrat/lib*/
-packrat/src/
+packrat/src
 .Rproj.user

@@ -128,6 +128,12 @@ Source: CRAN
 Version: 1.0-6
 Hash: 67d0775189fd0041d95abca618c5c07e
 
+Package: caTools
+Source: CRAN
+Version: 1.17.1
+Hash: 97cb6f6293cd18d17df77a6383cc6763
+Requires: bitops
+
 Package: colorspace
 Source: CRAN
 Version: 1.2-6
@@ -142,6 +148,17 @@ Package: digest
 Source: CRAN
 Version: 0.6.8
 Hash: de202f956596a476d09304e3a2ebf1e5
+
+Package: evaluate
+Source: CRAN
+Version: 0.7
+Hash: a60973dc1469b851e9b099b7e47043b5
+Requires: stringr
+
+Package: formatR
+Source: CRAN
+Version: 1.2
+Hash: cce53206179a99ae5a8bcf154ab5abde
 
 Package: futile.logger
 Source: CRAN
@@ -165,6 +182,11 @@ Source: CRAN
 Version: 0.1.2
 Hash: 38a0f066373a60824cd3ade2362af363
 
+Package: highr
+Source: CRAN
+Version: 0.5
+Hash: 25f9c02030b94c8154273699a7df9cf8
+
 Package: htmltools
 Source: CRAN
 Version: 0.2.6
@@ -187,6 +209,12 @@ Source: CRAN
 Version: 0.9.16
 Hash: 24d362a166a96ac1969e64ede522c717
 
+Package: knitr
+Source: CRAN
+Version: 1.10.5
+Hash: 3734733a01c3a749fcf26a6c9adfb8e4
+Requires: digest, evaluate, formatR, highr, markdown, stringr, yaml
+
 Package: labeling
 Source: CRAN
 Version: 0.3
@@ -201,6 +229,12 @@ Package: magrittr
 Source: CRAN
 Version: 1.5
 Hash: bdc4d48c3135e8f3b399536ddf160df4
+
+Package: markdown
+Source: CRAN
+Version: 0.7.7
+Hash: fea2343a1119d61b0cc5c0a950d103a3
+Requires: mime
 
 Package: mime
 Source: CRAN
@@ -235,6 +269,12 @@ Version: 1.4.1
 Hash: 5990382c4af41f623890b1aeb63ffab5
 Requires: Rcpp, plyr, stringr
 
+Package: rmarkdown
+Source: CRAN
+Version: 0.7
+Hash: bf9c8cfc700d2417a309dd7a5ebd41d3
+Requires: caTools, htmltools, knitr, yaml
+
 Package: scales
 Source: CRAN
 Version: 0.2.5
@@ -267,6 +307,11 @@ Package: xtable
 Source: CRAN
 Version: 1.7-4
 Hash: 30ed90ebdd90a529aab31fd6792a8d61
+
+Package: yaml
+Source: CRAN
+Version: 2.1.13
+Hash: 4854ccabebc225e8a7309fb4a74980de
 
 Package: zlibbioc
 Source: Bioconductor
