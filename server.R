@@ -52,7 +52,8 @@ shinyServer(function(input, output) {
 
   
   data_to_plot = reactive({
-    region = str_split(input$region,'\\:')[[1]]
+    input$go1
+    region = str_split(isolate(input$region),'\\:')[[1]]
     chr = paste('chr',region[1],sep='')
     
     Start = as.integer(str_split(region[2], '\\-')[[1]][1])
@@ -64,12 +65,11 @@ shinyServer(function(input, output) {
 
 output$covgPlot <- renderPlot({
   
-  input$go1
  # all_coverage <- user_coverage()
  #  targets <- user_targets()
   
   add_exons = input$add_exons
-  region = str_split(input$region,'\\:')[[1]]
+  region = str_split(isolate(input$region),'\\:')[[1]]
   chr = paste('chr',region[1],sep='')
   
   Start = as.integer(str_split(region[2], '\\-')[[1]][1])
@@ -97,7 +97,7 @@ output$covgPlot_own <- renderPlot({
 #   
 #   
 add_exons = input$add_exons2
-  region = str_split(input$region2,'\\:')[[1]]
+  region = str_split(isolate(input$region2),'\\:')[[1]]
   chr = paste('chr',region[1],sep='')
   
   Start = as.integer(str_split(region[2], '\\-')[[1]][1])
