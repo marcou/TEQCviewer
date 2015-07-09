@@ -136,12 +136,12 @@ draw_plot_with_exons= function(data_to_plot, targets, chr, Start, End, ensembl_i
         gene_name = exons$external_gene_name[1]
         #the above should be split across multiple genes (if threr are more than 1)
         
-        data_names = data.frame(x=mid_point,y=8,label=gene_name)
+        data_names = data.frame(x=mid_point,y=ma/5,label=gene_name)
         
       plot = plot+
-          geom_rect(data=as.data.frame(exonsrange),aes(x=NULL,y=NULL,xmin=start-1,ymin=2,ymax=3,xmax=end+1),
+          geom_rect(data=as.data.frame(exonsrange),aes(x=NULL,y=NULL,xmin=start-1,xmax=end+1), ymin=ma/21,ymax=ma/19,
                     fill='blue', alpha = 0.3)+
-          geom_rect(data=as.data.frame(iexons),aes(x=NULL,y=NULL,xmin=start,ymin=0,ymax=5,xmax=end),
+          geom_rect(data=as.data.frame(iexons),aes(x=NULL,y=NULL,xmin=start,ymin=0,xmax=end), ymax=ma/10,
                     fill='blue', alpha = 0.3)+
           geom_text(data=data_names,aes(x=x,y=y,label=label),  colour='blue', alpha = 0.8)
     
