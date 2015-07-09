@@ -90,17 +90,17 @@ output$covgPlot <- renderPlot({
 
 output$covgPlot_own <- renderPlot({
   
-#  all_coverage <- user_coverage()
-#   targets <- user_targets()
+  all_coverage <- user_coverage()
+   targets <- user_targets()
 #   
 #   
-#   region = str_split(input$region,'\\:')[[1]]
-#   chr = paste('chr',region[1],sep='')
-#   
-#   Start = as.integer(str_split(region[2], '\\-')[[1]][1])
-#   End = as.integer(str_split(region[2], '\\-')[[1]][2])
-#   
-#   data_to_plot = prep_plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
+  region = str_split(input$region2,'\\:')[[1]]
+  chr = paste('chr',region[1],sep='')
+  
+  Start = as.integer(str_split(region[2], '\\-')[[1]][1])
+  End = as.integer(str_split(region[2], '\\-')[[1]][2])
+  
+   data_to_plot = prep_plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
 #   
   
   #   Start =  11157025  

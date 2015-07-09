@@ -22,7 +22,7 @@ coverage_plot <- tabPanel("Coverage",
 )
 
 coverage_plot_own <- tabPanel("Coverage Two",
-                          inputPanel(textInput("region", "Region (chr:start-stop):", "1:11157025-11158264")),
+                          inputPanel(textInput("region2", "Region (chr:start-stop):", "1:20915200-20951500")),
                           wellPanel(plotOutput("covgPlot_own"))
                           )
 
