@@ -55,7 +55,7 @@ fetch_coordinates_for_gene = function(ensembl_in,gene_id, key='external_gene_nam
 # chr = 'chr1'
 # plot_with_exons(coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human)
 
-plot_with_exons= function(coverageAll, targets, chr, Start, End, Offset=0, add=FALSE,
+prep_plot_with_exons= function(coverageAll, targets, chr, Start, End, Offset=0, add=FALSE,
                           col.line=1, col.target="orange", col.offset="yellow", ensembl_in, ...) {
   
   covercounts = coverageAll[[chr]]
@@ -78,32 +78,39 @@ plot_with_exons= function(coverageAll, targets, chr, Start, End, Offset=0, add=F
   
   message(length(ir))
   covsel = covercounts[ir]  # use [ instead of deprecated seqselect
-  message(length(covsel))
+ # message(length(covsel))
   
   # also stop if coverage is 0 for all bases in selected region
   if(all(covsel == 0)) {
     stop(paste("no reads falls into the selected region on chromosome", chrom))
   }
   
-  ma = max(covsel)
+  #ma = max(covsel)
   #mi = .04 * ma
   #ylim = c(-mi, ma)
   
-  data_to_plot = data.frame(x=Start:End, coverage=covsel)
+  data_to_plot = data.frame(x=Start:End, y=covsel)
   
   # genes = fetch_all_genes_for_region(ensembl_in = ensembl_human,chr_num = chrom, start = Start, end = End)
   
-  exons = fetch_all_exons_for_region(ensembl_in = ensembl_human,chr_num = chrom, start = Start, end = End)
+  return(data_to_plot)
   
-#   exons=exons[(exons$exon_chrom_start>Start &  exons$exon_chrom_start<End) |
-#                 (exons$exon_chrom_end>Start &  exons$exon_chrom_end<End) ,]
-  #only ones in our desired range
+}
   
-  plot = ggplot(data=data_to_plot, aes(x=x,y=coverage))+
+draw_plot_with_exons= function(data_to_plot, targets, chr, Start, End, ensembl_in, ...) {
+    
+  ir = IRanges(start=Start, end=End)
+  chrom = substr(chr, 4, nchar(chr))
+  ma = max(data_to_plot$y)
+  
+  plot = ggplot(data=data_to_plot, aes(x=x,y=y))+
     geom_line(size=1, colour='black',alpha=0.8)+
     scale_y_continuous('Coverage')+
     xlab(paste('position on chromososme', chr))+
     theme_bw()
+  
+  exons = fetch_all_exons_for_region(ensembl_in = ensembl_human,chr_num = chrom, start = Start, end = End)
+
   
   if(dim(exons)[1]>0) {
     

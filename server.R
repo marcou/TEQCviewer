@@ -49,6 +49,8 @@ user_data <- reactive({
 
   })
 
+
+
 output$covgPlot <- renderPlot({
   
   region = str_split(input$region,'\\:')[[1]]
@@ -56,25 +58,36 @@ output$covgPlot <- renderPlot({
   
   Start = as.integer(str_split(region[2], '\\-')[[1]][1])
   End = as.integer(str_split(region[2], '\\-')[[1]][2])
-    
+  
+  data_to_plot = prep_plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
+  
 #   Start =  11157025  
 #   
 #   End = 11158264
 #   
 #   chr = 'chr1'
   
-  bp <- plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
+  bp <- draw_plot_with_exons(data_to_plot,targets,chr,Start,End, ensembl_in=ensembl_human) 
   bp
+
+})
+
+output$click_info <- renderText({
+  region = str_split(input$region,'\\:')[[1]]
+  chr = paste('chr',region[1],sep='')
   
+  Start = as.integer(str_split(region[2], '\\-')[[1]][1])
+  End = as.integer(str_split(region[2], '\\-')[[1]][2])
   
+  data_to_plot = prep_plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
   
-  #     # generate bins based on input$bins from ui.R
-  #     x    <- faithful[, 2]
-  #     bins <- seq(min(x), max(x), length.out = 30)
-  # 
-  #     # draw the histogram with the specified number of bins
-  #     hist(x, breaks = bins, col = 'darkgray', border = 'white')
+  nearest = nearPoints(data_to_plot, input$plot_click, addDist = TRUE)
   
+   paste("Selected location:\n",chr,':',nearest$x[1],' coverage=',nearest$y[1],sep='')
+})
+output$hover_info <- renderPrint({
+  cat("input$plot_hover:\n")
+  str(input$plot_hover)
 })
 
 })

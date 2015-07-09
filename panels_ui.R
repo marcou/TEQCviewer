@@ -13,18 +13,11 @@ coverage_hist <- tabPanel("Histogram",
 
 coverage_plot <- tabPanel("Coverage",
                      inputPanel(textInput("region", "Region (chr:start-stop):", "1:11157025-11158264")),
-                     wellPanel(plotOutput("covgPlot"))
+                     wellPanel(plotOutput("covgPlot", 
+                                          click = "plot_click",
+                                          hover = hoverOpts(
+                                            id = "plot_hover"
+                                          ))),
+                     wellPanel(textOutput("click_info"))
 )
-
-
-# coverage <- tabPanel('coverage', 
-#                      h6("Coverage on selected targets"), 
-#                      selectInput("mut", 
-#                                  label=" coverage on regions of interest: 
-# select mutation", 
-#                                  choices=levels(mut$name)
-#                      ),
-#                      plotOutput('cvg_mut')
-# )
-         
-         
+            
