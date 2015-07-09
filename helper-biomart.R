@@ -133,10 +133,11 @@ plot_with_exons= function(coverageAll, targets, chr, Start, End, Offset=0, add=F
   
   tar = intersect(ir, ranges(targets)[[chr]])
   
-  plot = plot +
-    geom_rect(data=as.data.frame(tar),aes(x=NULL,y=NULL,xmin=start,ymin=0,xmax=end), ymax=ma,
-                       fill='grey', alpha = 0.3)
-    
+  if (length(tar)>0) {
+    plot = plot +
+      geom_rect(data=as.data.frame(tar),aes(x=NULL,y=NULL,xmin=start,ymin=0,xmax=end), ymax=ma,
+                         fill='grey', alpha = 0.3)
+  } 
   
   #show plot/return plot
   plot
