@@ -59,24 +59,31 @@ plot_with_exons= function(coverageAll, targets, chr, Start, End, Offset=0, add=F
                           col.line=1, col.target="orange", col.offset="yellow", ensembl_in, ...) {
   
   covercounts = coverageAll[[chr]]
+  
+  #message(length(covercounts))
+  
   chrom = substr(chr, 4, nchar(chr)) #chromosome number
   
   # stop if all reads lie "left" of the selected Start position
   L = length(covercounts)
-  if(L < Start)
-    
+  if(L < Start) {
     stop(paste("no reads falls into the selected region on chromosome", chrom))
-  
+  }
   # add 0's when 'End' is "right" of largest read position
-  if(L < End)
+  if(L < End) {
     covercounts = c(covercounts, Rle(rep(0, End-L)))
+  }
   
   ir = IRanges(start=Start, end=End)
+  
+  message(length(ir))
   covsel = covercounts[ir]  # use [ instead of deprecated seqselect
+  message(length(covsel))
   
   # also stop if coverage is 0 for all bases in selected region
-  if(all(covsel == 0))
+  if(all(covsel == 0)) {
     stop(paste("no reads falls into the selected region on chromosome", chrom))
+  }
   
   ma = max(covsel)
   #mi = .04 * ma
@@ -92,7 +99,7 @@ plot_with_exons= function(coverageAll, targets, chr, Start, End, Offset=0, add=F
 #                 (exons$exon_chrom_end>Start &  exons$exon_chrom_end<End) ,]
   #only ones in our desired range
   
-  plot = ggplot(data=data_to_plot, aes(x=x,y=covsel))+
+  plot = ggplot(data=data_to_plot, aes(x=x,y=coverage))+
     geom_line(size=1, colour='black',alpha=0.8)+
     scale_y_continuous('Coverage')+
     xlab(paste('position on chromososme', chr))+
@@ -117,7 +124,7 @@ plot_with_exons= function(coverageAll, targets, chr, Start, End, Offset=0, add=F
     data_names = data.frame(x=mid_point,y=8,label=gene_name)
     
   plot = plot+
-      geom_rect(data=as.data.frame(exonsrange),aes(x=NULL,y=NULL,xmin=start,ymin=2,ymax=3,xmax=end),
+      geom_rect(data=as.data.frame(exonsrange),aes(x=NULL,y=NULL,xmin=start-1,ymin=2,ymax=3,xmax=end+1),
                 fill='blue', alpha = 0.3)+
       geom_rect(data=as.data.frame(iexons),aes(x=NULL,y=NULL,xmin=start,ymin=0,ymax=5,xmax=end),
                 fill='blue', alpha = 0.3)+
@@ -127,7 +134,7 @@ plot_with_exons= function(coverageAll, targets, chr, Start, End, Offset=0, add=F
   tar = intersect(ir, ranges(targets)[[chr]])
   
   plot = plot +
-    geom_rect(data=as.data.frame(tar),aes(x=NULL,y=NULL,xmin=start,ymin=0,ymax=ma,xmax=end),
+    geom_rect(data=as.data.frame(tar),aes(x=NULL,y=NULL,xmin=start,ymin=0,xmax=end), ymax=ma,
                        fill='grey', alpha = 0.3)
     
   

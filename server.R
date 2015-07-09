@@ -13,7 +13,7 @@ data_dir <- "example_data"
 load(file.path(data_dir, "targets.RData"))
 load(file.path(data_dir, "reads.RData"))
 load(file.path(data_dir, "all_coverage.RData"))
-
+source('helper-biomart.R')
 
 shinyServer(function(input, output) {
   
@@ -47,5 +47,26 @@ user_data <- reactive({
 #     hist(x, breaks = bins, col = 'darkgray', border = 'white')
 
   })
+
+output$covgPlot <- renderPlot({
+  Start =  11157025  
+  
+  End = 11158264
+  
+  chr = 'chr1'
+  
+  bp <- plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
+  bp
+  
+  
+  
+  #     # generate bins based on input$bins from ui.R
+  #     x    <- faithful[, 2]
+  #     bins <- seq(min(x), max(x), length.out = 30)
+  # 
+  #     # draw the histogram with the specified number of bins
+  #     hist(x, breaks = bins, col = 'darkgray', border = 'white')
+  
+})
 
 })
