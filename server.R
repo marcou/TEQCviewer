@@ -130,4 +130,6 @@ output$hover_info <- renderPrint({
   str(input$plot_hover)
 })
 
+output$caption = renderText({'Click on a datapoint'})
+
 })

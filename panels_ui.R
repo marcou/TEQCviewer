@@ -21,7 +21,8 @@ coverage_plot <- tabPanel("Coverage",
                                           hover = hoverOpts(
                                             id = "plot_hover"
                                           ))),
-                     wellPanel(textOutput("click_info"))
+                     wellPanel(h3(textOutput("caption")),
+                               textOutput("click_info"))
 )
 
 coverage_plot_own <- tabPanel("Coverage Two",

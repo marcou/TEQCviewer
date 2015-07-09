@@ -112,7 +112,7 @@ draw_plot_with_exons= function(data_to_plot, targets, chr, Start, End, ensembl_i
   plot = ggplot(data=data_to_plot, aes(x=x,y=y))+
     geom_line(size=1, colour='black',alpha=0.8)+
     scale_y_continuous('Coverage')+
-    xlab(paste('position on chromososme', chr))+
+    xlab(paste('position on chromosome', chr))+
     theme_bw()
   
   if (add_exons) {
@@ -139,17 +139,18 @@ draw_plot_with_exons= function(data_to_plot, targets, chr, Start, End, ensembl_i
         data_names = data.frame(x=mid_point,y=ma/5,label=gene_name)
         
       plot = plot+
-          geom_rect(data=as.data.frame(exonsrange),aes(x=NULL,y=NULL,xmin=start-1,xmax=end+1), ymin=ma/21,ymax=ma/19,
+          geom_rect(data=as.data.frame(exonsrange),aes(x=NULL,y=NULL,xmin=start-1,xmax=end+1), ymin=ma/22,ymax=ma/18,
                     fill='blue', alpha = 0.3)+
           geom_rect(data=as.data.frame(iexons),aes(x=NULL,y=NULL,xmin=start,ymin=0,xmax=end), ymax=ma/10,
                     fill='blue', alpha = 0.3)+
-          geom_text(data=data_names,aes(x=x,y=y,label=label),  colour='blue', alpha = 0.8)
+          geom_text(data=data_names,aes(x=x,y=y,label=label),  colour='blue', alpha = 0.8, size=6)
     
       }
     }
   }
   
   tar = intersect(ir, ranges(targets)[[chr]])
+  
   
   if (length(tar)>0) {
     plot = plot +
