@@ -9,17 +9,13 @@ library(shiny)
 library(TEQC)
 library(ggplot2)
 
-#source(coverage_ui.R)
+source("panels_ui.R")
 
 
 shinyUI(fluidPage(
   headerPanel("TEQCviewer"),
   mainPanel(
-    tabsetPanel(
-      tabPanel("header",
-               inputPanel(textInput("region", "Region:", "1:123-456")),
-               wellPanel(plotOutput("distPlot"))
-    )
+    tabsetPanel(load_data, coverage
   ))))
 
 
