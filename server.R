@@ -8,6 +8,7 @@
 library(shiny)
 library(TEQC)
 library(ggplot2)
+library(stringr)
 
 data_dir <- "example_data"
 load(file.path(data_dir, "targets.RData"))
@@ -49,11 +50,18 @@ user_data <- reactive({
   })
 
 output$covgPlot <- renderPlot({
-  Start =  11157025  
   
-  End = 11158264
+  region = str_split(input$region,'\\:')[[1]]
+  chr = paste('chr',region[1],sep='')
   
-  chr = 'chr1'
+  Start = as.integer(str_split(region[2], '\\-')[[1]][1])
+  End = as.integer(str_split(region[2], '\\-')[[1]][2])
+    
+#   Start =  11157025  
+#   
+#   End = 11158264
+#   
+#   chr = 'chr1'
   
   bp <- plot_with_exons(all_coverage$coverageAll,targets,chr,Start,End, ensembl_in=ensembl_human) 
   bp
