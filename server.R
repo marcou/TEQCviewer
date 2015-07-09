@@ -64,6 +64,7 @@ shinyServer(function(input, output) {
 
 output$covgPlot <- renderPlot({
   
+  input$go1
  # all_coverage <- user_coverage()
  #  targets <- user_targets()
   
@@ -90,6 +91,7 @@ output$covgPlot <- renderPlot({
 
 output$covgPlot_own <- renderPlot({
   
+  input$go2
   all_coverage <- user_coverage()
    targets <- user_targets()
 #   
