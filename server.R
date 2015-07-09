@@ -14,44 +14,49 @@ data_dir <- "example_data"
 load(file.path(data_dir, "targets.RData"))
 load(file.path(data_dir, "reads.RData"))
 load(file.path(data_dir, "all_coverage.RData"))
+x_reads <- reads
+x_targets <- targets
+x_all_coverage <- all_coverage
 source('helper-biomart.R')
 
 shinyServer(function(input, output) {
   
   #source("coverage_server.R", local=TRUE)
   
-user_data <- reactive({
-  rds <- input$reads
-  tgt <- input$targets
-  cvg <- input$all_coverage
+  user_targets <- reactive({
+    if(is.null(input$targets)){return(x_targets)} else {
+      load(input$targets$datapath)
+      return(targets)}
+  })
   
-  if(is.null(c(input$reads, input$targets, input$all_coverage))){return(NULL)}
+  user_reads <- reactive({
+    if(is.null(input$reads)){return(x_reads)} else {
+      load(input$reads$datapath)
+      return(reads)}
+  })
   
-  load(rds$datapath)
-  load(tgt$datapath)
-  load(cvg$datapath)
-})
+  user_coverage <- reactive({
+    if(is.null(input$coverage)){return(x_all_coverage)} else {
+      load(input$coverage$datapath)
+      return(all_coverage)}
+  })
+  
   
 
   output$distPlot <- renderPlot({
 
-  bp <- chrom.barplot(reads, targets) 
+  bp <- chrom.barplot(user_reads(), user_targets()) 
    bp
-
-   
-   
-#     # generate bins based on input$bins from ui.R
-#     x    <- faithful[, 2]
-#     bins <- seq(min(x), max(x), length.out = 30)
-# 
-#     # draw the histogram with the specified number of bins
-#     hist(x, breaks = bins, col = 'darkgray', border = 'white')
 
   })
 
 
 
 output$covgPlot <- renderPlot({
+  
+  all_coverage <- user_coverage()
+  targets <- user_targets()
+  
   
   region = str_split(input$region,'\\:')[[1]]
   chr = paste('chr',region[1],sep='')
